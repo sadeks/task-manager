@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button , Modal, ControlLabel, FormControl} from 'react-bootstrap';
-import uuidv1 from 'uuid/v1';
+// import uuidv1 from 'uuid/v1';
 
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
@@ -46,7 +46,6 @@ class TaskCreateForm extends Component {
   handleCreateTaskClick() {
     //   console.log('hii');
       let task = {
-          id: uuidv1(),
           title: this.state.title,
           description:this.state.description,
           due: this.state.dueDate

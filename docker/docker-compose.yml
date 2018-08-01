@@ -2,18 +2,20 @@
 version: '3'
 
 services:
-  redis:
-    image: redis
+  mongo:
+    image: mongo
     container_name: datastore
+    volumes:
+    - mongo:/data/db
     expose:
-    - 6379
+    - 27017:27017
 
   service:
     build: ../service
     links: 
-    - redis
+    - mongo
     environment:
-    - REDIS_URL=redis://datastore
+    - MONGO_URL=mongo://datastore:27017
     ports:
     - "3001:3001"
     volumes:
