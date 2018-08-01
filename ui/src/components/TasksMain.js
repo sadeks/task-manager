@@ -57,7 +57,7 @@ class TasksMain extends Component {
                 let tasks = res.body;
                 this.setState({
                     isLoaded: true,
-                    tasks: tasks.sort(i=>i.due).reverse()
+                    tasks: tasks
                 });
             });
     }
@@ -111,6 +111,7 @@ class TasksMain extends Component {
                     <Button className="pull-right" bsStyle="success" bsSize="large" onClick={this.toggleModal}>Create Task</Button>
                 </div>
                 <ListGroup className="container">
+                {tasks.length==0? "So empty here. Create a task to start.": ""}
                     {tasks.map( task => {
                         return (
                             <NavLink key={task.id} to={`/task/${task.id}`}>

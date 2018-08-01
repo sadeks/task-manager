@@ -1,0 +1,32 @@
+# docker-compose.yml
+version: '3'
+
+services:
+  redis:
+    image: redis
+    container_name: datastore
+    expose:
+    - 6379
+
+  service:
+    build: ../service
+    links: 
+    - redis
+    environment:
+    - REDIS_URL=redis://datastore
+    ports:
+    - "3001:3001"
+    volumes:
+    - ../service:/app
+
+  app:
+    build: ../ui
+    links: 
+    - service
+    ports:
+    - "3000:3000"
+    volumes:
+    - ../ui:/app
+
+
+
