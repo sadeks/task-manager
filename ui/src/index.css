@@ -1,0 +1,44 @@
+@import 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css';
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+.App {
+  text-align: center;
+}
+
+
+.list-group {
+  text-align: left;
+  margin-top: 1.2em;
+}
+
+.list-group-item {
+  height: 8em;
+  margin-bottom: 1em !important;
+}
+
+.a:hover{ 
+  text-decoration: none !important;
+}
+
+.actions {
+  margin-right: 0.5em;
+}
+
+.late-task {
+  border-color:red;
+  border-width: 0.3rem;
+}
+
+.warning-task {
+  border-color: orange;
+  border-width: 0.3rem;
+}
+
+.task-status{
+  font-size: large;
+}
