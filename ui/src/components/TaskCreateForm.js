@@ -40,7 +40,6 @@ class TaskCreateForm extends Component {
   }
 
   handleDescriptionChange(e) {
-    console.log('handleDescriptionChange fired. e.target.value is', e.target.value);
     this.setState({ description: e.target.value });
   }
   handleDueDateChange(date) {

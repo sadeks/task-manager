@@ -18,6 +18,7 @@ class TasksMain extends Component {
         super(props);
         this.state = {
             tasks: [],
+            isLoaded:false,
             showCreateModal: false,
             showPastDueOnly:false,
             showDueTodayOrTomOnly:false,
@@ -107,7 +108,7 @@ class TasksMain extends Component {
         const tomorrow = moment().add(1, 'days').format(dFormat);
         const taskDueDate = moment(dueDate).format(dFormat);
 
-        if (taskDueDate == tomorrow || taskDueDate == today) {
+        if (taskDueDate === tomorrow || taskDueDate === today) {
             return true;
         }
 
@@ -145,7 +146,7 @@ class TasksMain extends Component {
 
         tasks = showPastDueOnly ? tasks.filter(t=> this.isPastDue(t.due)) :
                 showDueTodayOrTomOnly ? tasks.filter(t=> this.isDueTodayOrTomorrow(t.due)) :
-                showCompletedOnly ? tasks.filter(t=>t.done == true) : 
+                showCompletedOnly ? tasks.filter(t=>t.done === true) : 
                 tasks;
 
 
@@ -165,7 +166,7 @@ class TasksMain extends Component {
                     <Button className="pull-right" bsStyle="success" bsSize="large" onClick={this.toggleModal}>Create Task</Button>
                 </div>
                 <ListGroup className="container">
-                {tasks.length==0? "Nothing to show here..": ""}
+                {tasks.length === 0? "Nothing to show here..": ""}
 
                     {tasks.map( task => {
                         return (

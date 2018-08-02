@@ -3,7 +3,7 @@ version: '3'
 
 services:
   mongo:
-    image: mongo
+    image: mongo:latest
     container_name: datastore
     environment:
       - MONGO_DATA_DIR=/data/db
@@ -15,8 +15,6 @@ services:
     build: ../service
     links: 
     - mongo
-    environment:
-    - MONGO_URL=mongodb://datastore:27017
     ports:
     - "3001:3001"
     volumes:
