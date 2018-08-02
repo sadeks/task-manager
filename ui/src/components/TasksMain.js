@@ -18,21 +18,31 @@ class TasksMain extends Component {
         super(props);
         this.state = {
             tasks: [],
-            showCreateModal: false
+            showCreateModal: false,
+            showPastDueOnly:false,
+            showDueTodayOrTomOnly:false,
+            showCompletedOnly: false
         }
 
         this.handleComplete = this.handleComplete.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
         this.toggleModal = this.toggleModal.bind(this);
+
+        this.filterPastDue = this.filterPastDue.bind(this);
+        this.filterDueTodayOrTomorrow = this.filterDueTodayOrTomorrow.bind(this);
+        this.filterCompleted = this.filterCompleted.bind(this);
+        this.showAllTasks = this.showAllTasks.bind(this);
+
         this.loadTasks = this.loadTasks.bind(this);
+
     }
 
-    handleComplete(e, task) {
+    handleComplete(e, taskId, taskDone) {
         e.preventDefault();
-        console.log(`updating task ${task.id}`);
+        console.log(`updating task ${taskId}`);
         request
-            .put(`http://localhost:3001/tasks/${task.id}`)
-            .send({ done: !task.done })
+            .put(`http://localhost:3001/tasks/${taskId}`)
+            .send({ done: !taskDone })
             .end((err, res) => {
                 if (err) {
                     //display error message using state
@@ -45,19 +55,32 @@ class TasksMain extends Component {
             });
     }
 
-    handleDelete(e) {
+    handleDelete(e, taskId) {
         e.preventDefault();
+
+        request
+        .delete(`http://localhost:3001/tasks/${taskId}`)
+        .end((err, res) => {
+            if (err) {
+                //display error message using state
+            }
+            console.log(err);
+            console.log(res);
+
+            //refresh tasks on success
+            this.loadTasks();
+        });
     }
 
     loadTasks() {
         console.log('loadTasks fired.');
         request.get("http://localhost:3001/tasks")
             .end((err, res) => {
-                console.log(res);
-                let tasks = res.body;
+                // console.log(res);
+
                 this.setState({
                     isLoaded: true,
-                    tasks: tasks
+                    tasks: res.body
                 });
             });
     }
@@ -91,6 +114,26 @@ class TasksMain extends Component {
         return false;
     }
 
+    filterDueTodayOrTomorrow(){
+        //set filter
+        this.setState({ showDueTodayOrTomOnly: true, showPastDueOnly: false , filterCompleted:false});
+    };
+
+    filterPastDue() {
+        //reload tasks to ensure clean slate
+        this.setState({ showDueTodayOrTomOnly: false, showPastDueOnly: true, showCompletedOnly:false });
+    };
+
+    filterCompleted(){
+        //set filter
+        this.setState({ showDueTodayOrTomOnly: false, showPastDueOnly: false, showCompletedOnly:true});
+    }
+
+    showAllTasks(){
+        //set filter
+        this.setState({ showDueTodayOrTomOnly: false, showPastDueOnly: false, showCompletedOnly:false});
+    }
+
     toggleModal() {
         this.setState({ showCreateModal: !this.state.showCreateModal });
     }
@@ -98,7 +141,13 @@ class TasksMain extends Component {
 
     render() {
 
-        const { tasks, showCreateModal } = this.state;
+        let { tasks, showCreateModal, showDueTodayOrTomOnly, showPastDueOnly, showCompletedOnly } = this.state;
+
+        tasks = showPastDueOnly ? tasks.filter(t=> this.isPastDue(t.due)) :
+                showDueTodayOrTomOnly ? tasks.filter(t=> this.isDueTodayOrTomorrow(t.due)) :
+                showCompletedOnly ? tasks.filter(t=>t.done == true) : 
+                tasks;
+
 
         return (
             <div>
@@ -106,22 +155,28 @@ class TasksMain extends Component {
                     <h1>Task Managr</h1>
                     <p>This is a simple task manager. Create and update tasks below.</p>
                 </Jumbotron>
-                TODOS: add filters
+
                 <div className="container">
+                    <Button style={{marginRight: '.5em', marginLeft: '-1em'}} bsStyle="default" bsSize="large" onClick={this.showAllTasks}>All</Button>
+                    <Button style={{marginRight: '.5em'}} bsStyle="info" bsSize="large" onClick={this.filterCompleted}>Completed</Button>
+                    <Button style={{marginRight: '.5em'}} bsStyle="danger" bsSize="large" onClick={this.filterPastDue}>Past Due</Button>
+                    <Button bsStyle="warning" bsSize="large" onClick={this.filterDueTodayOrTomorrow}>Due today or tomorrow</Button>
+
                     <Button className="pull-right" bsStyle="success" bsSize="large" onClick={this.toggleModal}>Create Task</Button>
                 </div>
                 <ListGroup className="container">
                 {tasks.length==0? "So empty here. Create a task to start.": ""}
+
                     {tasks.map( task => {
                         return (
-                            <NavLink key={task.id} to={`/task/${task.id}`}>
+                            <NavLink key={task._id} to={`/task/${task._id}`}>
                                 <ListGroupItem header={task.title} className={this.isPastDue(task.due) ? "late-task" : this.isDueTodayOrTomorrow(task.due) ? 'warning-task' : ''}>
                                     {this.isDueTodayOrTomorrow(task.due)}
                                     Due <Moment format="YYYY/MM/DD" date={task.due}></Moment>
                                     <span className="pull-right">
-                                        <Button className="actions" bsStyle="primary" bsSize="large" onClick={(e) => this.handleComplete(e, task)}>
+                                        <Button className="actions" bsStyle="primary" bsSize="large" onClick={(e) => this.handleComplete(e, task._id, task.done)}>
                                             {task.done ? "Undo Complete" : "Mark as Completed"}</Button>
-                                        <Button className="actions" bsStyle="danger" bsSize="large" onClick={this.handleDelete}>Remove</Button>
+                                        <Button className="actions" bsStyle="danger" bsSize="large" onClick={ (e) => this.handleDelete(e,task._id)}>Remove</Button>
                                         {task.done ? <i className="glyphicon glyphicon-ok" style={{ color: 'green' }}></i> : ""}
                                     </span>
                                 </ListGroupItem>
@@ -131,7 +186,7 @@ class TasksMain extends Component {
                 </ListGroup>
 
                 {/* create task component */}
-                <TaskCreateForm show={this.state.showCreateModal} onHide={this.toggleModal} toggleModal={this.toggleModal} loadTasks={this.loadTasks} />
+                <TaskCreateForm show={showCreateModal} onHide={this.toggleModal} toggleModal={this.toggleModal} loadTasks={this.loadTasks} />
             </div>
         );
     }

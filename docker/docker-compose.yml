@@ -5,9 +5,10 @@ services:
   mongo:
     image: mongo
     container_name: datastore
-    volumes:
-    - mongo:/data/db
-    expose:
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    ports:
     - 27017:27017
 
   service:
@@ -15,7 +16,7 @@ services:
     links: 
     - mongo
     environment:
-    - MONGO_URL=mongo://datastore:27017
+    - MONGO_URL=mongodb://datastore:27017
     ports:
     - "3001:3001"
     volumes:

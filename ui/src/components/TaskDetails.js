@@ -46,12 +46,13 @@ class TaskDetails extends Component {
             <div className="task-status pull-right">{task.done? "Complete" : "Not Complete"}</div>
             <br />
             <hr />
-            Due <Moment format="YYYY/MM/DD" due={task.due}></Moment>
+            <span> Due <Moment format="YYYY/MM/DD" due={task.due}></Moment> </span>
             <br />
             <hr />
-            <span className="task-description">
-              {task.description}
-            </span>
+            <div className="task-description"> {task.description} </div>
+
+            <br/>
+            <hr />
 
             <Button className="pull-right" onClick={ ()=> {this.props.history.push(`/`); }}>Go back</Button>
 
