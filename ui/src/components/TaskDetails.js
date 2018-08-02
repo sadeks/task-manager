@@ -40,7 +40,7 @@ class TaskDetails extends Component {
         <Jumbotron className="text-center">
           <h1>Task {task.title} details</h1>
         </Jumbotron>
-        TODOS: add filters
+
           <div className="task container">
             <h3>{task.title}</h3>
             <div className="task-status pull-right">{task.done? "Complete" : "Not Complete"}</div>
