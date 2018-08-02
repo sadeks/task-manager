@@ -5,7 +5,7 @@ How to run:
 - cd into /docker folder
 - run command: docker-compose up
 
-Wait for it to build, then head to localhost:3000 in your browser.
+Wait for it to build, then head to http://localhost:3000 in your browser.
 
 
 Run tests:
