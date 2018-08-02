@@ -153,7 +153,7 @@ class TasksMain extends Component {
             <div>
                 <Jumbotron className="text-center">
                     <h1>Task Managr</h1>
-                    <p>This is a simple task manager. Create and update tasks below.</p>
+                    <p>This is a simple task manager. Create and manage tasks below.</p>
                 </Jumbotron>
 
                 <div className="container">
@@ -165,7 +165,7 @@ class TasksMain extends Component {
                     <Button className="pull-right" bsStyle="success" bsSize="large" onClick={this.toggleModal}>Create Task</Button>
                 </div>
                 <ListGroup className="container">
-                {tasks.length==0? "So empty here. Create a task to start.": ""}
+                {tasks.length==0? "Nothing to show here..": ""}
 
                     {tasks.map( task => {
                         return (
