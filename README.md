@@ -9,3 +9,6 @@ Wait for it to build, then head to http://localhost:3000 in your browser.
 
 
 Run tests:
+
+- cd into /service
+- run command: node test
