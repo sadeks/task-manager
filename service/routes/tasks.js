@@ -1,9 +1,8 @@
-process.env.NODE_ENV = 'dev';
 
 var express = require('express');
 var router = express.Router();
 
-var tasksRepo = require('../repo/tasks');
+var tasksRepo = require('../repo/tasksRepo');
 
 /* GET all tasks. */
 router.get('/', (req, res, next) => {
@@ -41,7 +40,7 @@ router.put('/:id', (req, res, next) => {
     return tasksRepo.updateTaskById(req.params.id, task);
   }).then( (ok) => {
     // console.log(ok);
-    res.status(200).send('ok');
+    res.status(200).send(ok);
 
   }).catch((err) => {
     res.status(500).send(err);
@@ -58,7 +57,7 @@ router.post('/', (req, res, next)=> {
   // console.log(newTask);
 
   tasksRepo.createNewTask(newTask).then( (ok) => {
-    res.status(201).send('ok');
+    res.status(201).send(ok);
   }).catch((err) => {
     res.status(500).send(err);
   })
@@ -69,7 +68,7 @@ router.post('/', (req, res, next)=> {
 router.delete('/:id', (req, res, next) => {
 
   tasksRepo.deleteTaskById(req.params.id).then( (ok) => {
-    res.status(200).send('ok');
+    res.status(200).send(ok);
 
   }).catch((err) => {
     res.status(500).send(err);

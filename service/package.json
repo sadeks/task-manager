@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "test": "jest ./tests"
+    "test": "jest --detectOpenHandles"
   },
   "dependencies": {
     "cookie-parser": "~1.4.3",
@@ -16,7 +16,7 @@
     "morgan": "~1.9.0",
     "pug": "2.0.0-beta11"
   },
-  "jest":{
+  "jest": {
     "testURL": "http://localhost",
     "verbose": true
   },
@@ -24,6 +24,7 @@
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "jest": "^23.4.2",
+    "mongodb-memory-server": "^1.9.3",
     "superagent": "^3.8.3",
     "supertest": "^3.1.0"
   }

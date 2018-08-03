@@ -1,6 +1,5 @@
-var config = require('../config/config');
 
-const db = require('monk')(config.MONGO_URL);
+const db = require('monk')(process.env.MONGO_URL);
 const collection = 'tasks';
 
 const tasksCollection = db.get(collection);
