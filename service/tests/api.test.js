@@ -6,6 +6,7 @@ const request = require('supertest');
 
 let app;
 let mockData;
+let insertedMockTasks;
 
 describe('Test the APIs', async () => {
     //call setup constructor to set env mongourl to mock db
@@ -15,7 +16,7 @@ describe('Test the APIs', async () => {
         app = require('../app');
         mockData = require('./mongo_mock_stuff/mock_tasks');
         //add fake tasks
-        await mockData.populateDBWithTasks();
+        insertedMockTasks = await mockData.populateDBWithTasks();
     });
 
     afterAll(async () => {
@@ -24,10 +25,25 @@ describe('Test the APIs', async () => {
 
     test('GET all tasks', () => {
         return request(app).get("/tasks").then(response => {
+            let tasks = response.body;
             expect(response.statusCode).toBe(200);
-            expect(response.body.length).toBe(3);
+            expect(tasks.length).toBe(3);
         });
     });
+
+    test('GET existing task by id', () =>{
+        //grab an existing id from the db to fetch
+        let id = insertedMockTasks[0]._id.toString();
+        // console.log(insertedMockTasks);
+        return request(app)
+        .get('/tasks/'+id)
+        .then(response => {
+            let fetchedTask = response.body;
+            expect(response.statusCode).toBe(200);
+            expect(fetchedTask._id).toEqual(id);
+        })
+
+    })
 
     test('Insert a new task', () => {
         let newTask = {
@@ -39,12 +55,41 @@ describe('Test the APIs', async () => {
         return request(app)
         .post("/tasks")
         .send(newTask).then(response => {
-            // console.log(response);
+            
             let task = response.body; 
             expect(response.statusCode).toBe(201);
+            // test title and description
             expect(task.title).toEqual(newTask.title);
             expect(task.description).toEqual(newTask.description);
         });
+    });
+
+    test('Update existing task by id', () =>{
+        //grab the first task's id to update
+        let id = insertedMockTasks[0]._id.toString();
+        // console.log(insertedMockTasks);
+        return request(app)
+        .put('/tasks/'+id)
+        .send({ done: true }).then(response=>{
+            expect(response.statusCode).toBe(200);
+            expect(response.body.ok).toBe(1);
+            expect(response.body.n).toBe(1);
+        })
+
+    });
+
+    test('Delete existing task by id', () => {
+        //grab the first task's id to update
+        let id = insertedMockTasks[0]._id.toString();
+        // console.log(insertedMockTasks);
+        return request(app)
+        .delete('/tasks/'+id)
+        .then(response=>{
+            expect(response.statusCode).toBe(200);
+            expect(response.body.ok).toBe(1);
+            expect(response.body.n).toBe(1);
+        })
+
     })
 });
 
